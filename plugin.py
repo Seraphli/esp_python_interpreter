@@ -82,7 +82,7 @@ class Plugin(object):
     async def calc(self, content):
         try:
             res = eval(content, self.globals, self.locals)
-            res = res if res is not None else ""
+            res = str(res) if res is not None else ""
             await sio.emit(
                 "notify",
                 data=(
@@ -98,7 +98,7 @@ class Plugin(object):
         except SyntaxError:
             try:
                 res = exec(content, self.globals, self.locals)
-                res = res if res is not None else ""
+                res = str(res) if res is not None else ""
                 await sio.emit(
                     "notify",
                     data=(
