@@ -1,4 +1,4 @@
-# ESP Python
+# ESP Python Interpreter
 
 Electron Spirit Plugin
 
