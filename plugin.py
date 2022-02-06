@@ -82,14 +82,15 @@ class Plugin(object):
     async def calc(self, content):
         try:
             res = eval(content, self.globals, self.locals)
+            res = res if res is not None else ""
             await sio.emit(
                 "notify",
                 data=(
                     self.ctx,
                     {
-                        "text": res if res is not None else "",
+                        "text": res,
                         "title": PLUGIN_NAME,
-                        "duration": self.cfg["duration"],
+                        "duration": 3000 + len(res) * self.cfg["duration"],
                     },
                 ),
             )
@@ -97,41 +98,44 @@ class Plugin(object):
         except SyntaxError:
             try:
                 res = exec(content, self.globals, self.locals)
+                res = res if res is not None else ""
                 await sio.emit(
                     "notify",
                     data=(
                         self.ctx,
                         {
-                            "text": res if res is not None else "",
+                            "text": res,
                             "title": PLUGIN_NAME,
-                            "duration": self.cfg["duration"],
+                            "duration": 3000 + len(res) * self.cfg["duration"],
                         },
                     ),
                 )
                 print(res)
             except Exception as e:
+                res = str(e)
                 await sio.emit(
                     "notify",
                     data=(
                         self.ctx,
                         {
-                            "text": str(e),
+                            "text": res,
                             "title": PLUGIN_NAME,
-                            "duration": self.cfg["duration"],
+                            "duration": 3000 + len(res) * self.cfg["duration"],
                             "type": "error",
                         },
                     ),
                 )
                 print(e)
         except Exception as e:
+            res = str(e)
             await sio.emit(
                 "notify",
                 data=(
                     self.ctx,
                     {
-                        "text": str(e),
+                        "text": res,
                         "title": PLUGIN_NAME,
-                        "duration": self.cfg["duration"],
+                        "duration": 3000 + len(res) * self.cfg["duration"],
                         "type": "error",
                     },
                 ),
@@ -147,7 +151,7 @@ class Plugin(object):
             with codecs.open(PLUGIN_SETTING) as f:
                 self.cfg = json.load(f)
         except:
-            self.cfg = {"duration": -1}
+            self.cfg = {"duration": 50}
         self.save_cfg()
 
     def save_cfg(self):
