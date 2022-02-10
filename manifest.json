@@ -4,7 +4,7 @@
   "description": "Run one line python code in ES",
   "enabled": true,
   "init_default": [
-    "PYTHON -m pip install -r requirements.txt",
-    "PYTHON plugin.py"
-  ]
+    "PYTHON -m pip install -r requirements.txt"
+  ],
+  "run_default": "PYTHON plugin.py"
 }
