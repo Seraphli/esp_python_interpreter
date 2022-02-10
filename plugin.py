@@ -10,6 +10,7 @@ APP_NAME = "electron-spirit"
 PLUGIN_NAME = "ES Python"
 SHORT_NAME = "py"
 PLUGIN_SETTING = "plugin.setting.json"
+DEFAULT_CONFIG = {"duration": 50}
 
 
 class PluginApi(socketio.AsyncClientNamespace):
@@ -152,8 +153,11 @@ class Plugin(object):
         try:
             with codecs.open(PLUGIN_SETTING) as f:
                 self.cfg = json.load(f)
+            for k in DEFAULT_CONFIG:
+                if k not in self.cfg or type(self.cfg[k]) != type(DEFAULT_CONFIG[k]):
+                    self.cfg[k] = DEFAULT_CONFIG[k]
         except:
-            self.cfg = {"duration": 50}
+            self.cfg = DEFAULT_CONFIG
         self.save_cfg()
 
     def save_cfg(self):
