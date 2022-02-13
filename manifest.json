@@ -2,9 +2,12 @@
   "name": "ES Python Interpreter",
   "version": "",
   "description": "Run one line python code in ES",
-  "enabled": true,
-  "init_default": [
-    "PYTHON -m pip install -r requirements.txt --disable-pip-version-check"
-  ],
-  "run_default": "PYTHON plugin.py"
+  "init": {
+    "default": [
+      "PYTHON -m pip install -r requirements.txt --disable-pip-version-check"
+    ]
+  },
+  "run": {
+    "default": "PYTHON plugin.py"
+  }
 }
