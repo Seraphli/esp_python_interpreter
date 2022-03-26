@@ -19,12 +19,12 @@ class PluginApi(socketio.AsyncClientNamespace):
         self.elem_count = 0
         self.parent = parent
 
-    def on_connect(self):
+    async def on_connect(self):
         print("Connected")
+        await self.parent.setup_connect()
 
     def on_disconnect(self):
         print("Disconnected")
-        sys.exit(0)
 
     def on_echo(self, data):
         print("Echo:", data)
@@ -179,7 +179,7 @@ class Plugin(object):
         with codecs.open(PLUGIN_SETTING, "w") as f:
             json.dump(self.cfg, f)
 
-    async def test_case(self):
+    async def setup_connect(self):
         await sio.emit("addInputHook", data=("py"))
         await sio.emit(
             "notify",
@@ -190,7 +190,6 @@ class Plugin(object):
 
     async def loop(self):
         await sio.connect(f"http://localhost:{self.port}")
-        await self.test_case()
         await sio.wait()
 
 
