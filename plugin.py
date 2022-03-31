@@ -12,9 +12,11 @@ SHORT_NAME = "py"
 PLUGIN_SETTING = "plugin.setting.json"
 DEFAULT_CONFIG = {"duration": 50}
 
+o_print = print
+
 
 def print_flush(*args, **kwargs):
-    print(*args, **kwargs)
+    o_print(*args, **kwargs)
     sys.stdout.flush()
 
 
