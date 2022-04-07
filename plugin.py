@@ -32,7 +32,7 @@ class PluginApi(socketio.AsyncClientNamespace):
 
     async def on_connect(self):
         print("Connected")
-        if (self.connected):
+        if self.connected:
             print("Disconnect because already connected")
             asyncio.get_running_loop().stop()
             return
@@ -95,7 +95,8 @@ class PluginApi(socketio.AsyncClientNamespace):
 
     async def on_processContent(self, content):
         print("Process content:", content)
-        await self.parent.calc(content)
+        hook = content.split(" ")[0]
+        await self.parent.hooks[hook](content[len(hook) + 1 :])
 
     def on_modeFlag(self, flags):
         print("Mode flag:", flags)
@@ -117,6 +118,7 @@ class Plugin(object):
         self.locals = {}
         self.globals = {}
         self.api = PluginApi(self)
+        self.hooks = {"py": self.calc}
 
     async def calc(self, content):
         try:
@@ -198,7 +200,8 @@ class Plugin(object):
 
     async def setup_connect(self):
         print("Setup connect")
-        await sio.emit("addInputHook", data=("py"))
+        for hook in self.hooks.keys():
+            await sio.emit("addInputHook", data=(hook))
         await sio.emit(
             "notify",
             data=({"text": "Python Interpreter started.", "title": PLUGIN_NAME},),
